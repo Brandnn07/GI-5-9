@@ -1,4 +1,4 @@
-// EASY: Write a function htat takes in an array of numbers and outputs the average of all the numbers.
+// // EASY: Write a function htat takes in an array of numbers and outputs the average of all the numbers.
 
 var avgNumbers = [1, 4, 7];  //4
 var avgNumbers2 = [1.5, 3, 2.5, 1]; //2
@@ -12,9 +12,9 @@ function average(input) {
 }
 console.log(average(avgNumbers2))
 
-// MEDIUM: Suppose an array sorted in ascending order is roated at some pivot unkown to you before hand. (0124567) might become (4567012)
-// You are given a target value to search. If found in the array return its index, otherwise return -1.
-// You may assume no dplicate exists in the array.
+// // MEDIUM: Suppose an array sorted in ascending order is roated at some pivot unkown to you before hand. (0124567) might become (4567012)
+// // You are given a target value to search. If found in the array return its index, otherwise return -1.
+// // You may assume no dplicate exists in the array.
 var numArray = [4, 5, 6, 7, 8, 9];
 
 function checkNumber(array, target) {
@@ -64,34 +64,63 @@ console.log(checkNumber(numArray, 5));
 // Hint:  Sudo code this problem. Focus on breaking the problem down into steps  Use functions, arrays
 // and logical operators.  Do not have anyone give you the answer or solve this problem for you.
 
-var coinPurse1 = [1, 2, 5];
+var coinPurse1 = [1, 2, 5]; 
 var coinPurse2 = [];
 
-function coinCounter(purse, amount) {
-    let change = purse.sort();
+// The array can be in any order, sort it in descending order to find the least number of coin combinations
+// Subtract first number from the total amount (equals 6) and make new amount
+// Track that we have used one coin and restart the process by looping through array
+// Keep checking to see if the coin is greater than the amount, if so, move to next index
+// If amount doesn't reach 0, push out highest number or start at the next index and try the function again
+// while(coinPurse1.length >= 0)
+
+function coinCounter(purse, amount) { // Only checks arrays of 3
+    let change = purse.sort(function(a, b){return b-a}); // (5, 2, 1)
     let tally = 0;
-    let holder = 0;
-
-    while (amount) {
-        if (amount / change[i] < 1) { //Checks if any number is bigger than amount, it counts a tally
-            tally++;
+    let newAmount = 0;
+    // let i = 0
+     while(change.length > 0) {
+         if (newAmount >= 0) {
+            newAmount = amount - change[0];
+            tally++; // 1
+                if (newAmount >= change[0]) {
+                    newAmount = newAmount - change[0]; // 1
+                    tally++; // 2
+                } else {
+                    change.shift();
+                }
+            if (newAmount >= change[0]) {
+                newAmount = newAmount - change[0]; 
+                tally++; // 3
+            } else {
+                change.shift();
+                // console.log(change); // 2, 1
+                if (newAmount >= change[0]) {
+                    newAmount = newAmount - change[0]; 
+                    tally++;
+                } else {
+                    change.shift(); // 1
+                    if (newAmount >= change[0]) {
+                        newAmount = newAmount - change[0]; 
+                        tally++;
+                        if (newAmount >= change[0]) {
+                            newAmount = newAmount - change[0]; 
+                            tally++;
+                        } else { 
+                            change.shift(); // Should be end of array here
+                        }
+                    } else {
+                        change.shift(); // Should end array here too
+                    }
+                }
+            }
+            // it's looping here
         } else {
-            // console.log("here");
-            holder = amount + Math.floor(amount / change[i]);
-            amount = amount % change[i] //VERY similiar to the pair programming problem (should return one)
-            tally++ //increment as long as this is going
+            // the highest number is bigger than the amount, start at next index and try again
+            change.shift();
         }
-        
-        if (amount === 0) {
-            return tally;
-        }
-
-        if (tally === 0) { //If the function above did not increment anything, return -1
-            return -1
-        }
+         
     }
+    return tally;
 }
-
 console.log(coinCounter(coinPurse1, 11));
-console.log(Math.floor(11 / 2));
-console.log(Math.floor(11 % 2));
